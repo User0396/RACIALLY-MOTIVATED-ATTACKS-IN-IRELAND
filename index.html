@@ -42,9 +42,8 @@
         results.data.forEach(function(row) {
   if(row.latitude && row.longitude) {
     let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
-if (row.address) {
-  popupText += `<br>${row.address}`;
-}
+    if (row.address) {
+      popupText += `<br>${row.address}`;
     }
     if (row["victim's ethnicity"]) {
       popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
