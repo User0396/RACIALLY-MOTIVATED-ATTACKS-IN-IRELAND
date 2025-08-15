@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Racially Motivated Attacks in Ireland Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- PapaParse CSV Parser -->
+  <script src="https://unpkg.com/papaparse@5.4.0/papaparse.min.js"></script>
+  <script>
+    // Initialize the map
+    var map = L.map('map').setView([53.349805, -6.26031], 6); // Centered on Ireland
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // CSV file published from Google Sheets
+    var csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vResUjtEDyPD-UUNhNrEuXQbIqJ7RrYBRzsiT0VoqMhLLJKWtjoCTOHLqsM3InOnOwtWH7AIOK1eV0s/pub?output=csv";
+
+    Papa.parse(csvUrl, {
+      download: true,
+      header: true,
+      complete: function(results) {
+        results.data.forEach(function(row) {
+          // Check for valid lat/lon
+          if(row.latitude && row.longitude) {
+            var popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
+            L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
+              .addTo(map)
+              .bindPopup(popupText);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
