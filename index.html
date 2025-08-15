@@ -43,6 +43,9 @@
           // Check for valid lat/lon
           if(row.latitude && row.longitude) {
             let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
+            if (row["victim's ethnicity"]) {
+              popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
+            }
             if (row.image) {
               popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
             }
