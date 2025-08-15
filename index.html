@@ -7,7 +7,8 @@
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; }
+    html, body { height: 100%; margin: 0; padding: 0; }
+    #map { height: 100vh; width: 100vw; }
     .popup-image {
       max-width: 200px;
       max-height: 150px;
@@ -38,27 +39,31 @@
     Papa.parse(csvUrl, {
       download: true,
       header: true,
+      skipEmptyLines: true,
       complete: function(results) {
+        console.log("Parsed data:", results.data); // For debugging
         results.data.forEach(function(row) {
-  if(row.latitude && row.longitude) {
-    let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
-    if (row.address) {
-      popupText += `<br>${row.address}`;
-    }
-    if (row["victim's ethnicity"]) {
-      popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
-    }
-    if (row.image) {
-      popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
-    }
-    if (row.source) {
-      popupText += `<br><a href="${row.source}" target="_blank" rel="noopener noreferrer">News Source</a>`;
-    }
-    L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
-      .addTo(map)
-      .bindPopup(popupText);
-  }
-});
+          // Check that lat/lng exist and are valid numbers
+          if (
+            row.latitude && row.longitude &&
+            !isNaN(parseFloat(row.latitude)) && !isNaN(parseFloat(row.longitude))
+          ) {
+            let popupText = `<strong>${row.title || 'Untitled'}</strong>`;
+            if (row.date) popupText += `<br>${row.date}`;
+            if (row.address) popupText += `<br>${row.address}`;
+            if (row["victim's ethnicity"]) popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
+            if (row.image) popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
+            if (row.source) popupText += `<br><a href="${row.source}" target="_blank" rel="noopener noreferrer">News Source</a>`;
+
+            L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
+              .addTo(map)
+              .bindPopup(popupText);
+          }
+        });
+      },
+      error: function(err) {
+        console.error("PapaParse error:", err);
+        alert("Error loading CSV data. Please check your Google Sheet link and format.");
       }
     });
   </script>
