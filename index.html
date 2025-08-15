@@ -40,23 +40,25 @@
       header: true,
       complete: function(results) {
         results.data.forEach(function(row) {
-          // Check for valid lat/lon
-          if(row.latitude && row.longitude) {
-            let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
-            if (row["victim's ethnicity"]) {
-              popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
-            }
-            if (row.image) {
-              popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
-            }
-            if (row.source) {
-              popupText += `<br><a href="${row.source}" target="_blank" rel="noopener noreferrer">News Source</a>`;
-            }
-            L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
-              .addTo(map)
-              .bindPopup(popupText);
-          }
-        });
+  if(row.latitude && row.longitude) {
+    let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
+    if (row.address) {
+      popupText += `<br><em>Address:</em> ${row.address}`;
+    }
+    if (row["victim's ethnicity"]) {
+      popupText += `<br><em>Victim's ethnicity:</em> ${row["victim's ethnicity"]}`;
+    }
+    if (row.image) {
+      popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
+    }
+    if (row.source) {
+      popupText += `<br><a href="${row.source}" target="_blank" rel="noopener noreferrer">News Source</a>`;
+    }
+    L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
+      .addTo(map)
+      .bindPopup(popupText);
+  }
+});
       }
     });
   </script>
