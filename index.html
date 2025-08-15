@@ -8,6 +8,12 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     #map { height: 100vh; }
+    .popup-image {
+      max-width: 200px;
+      max-height: 150px;
+      margin-top: 5px;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -36,7 +42,13 @@
         results.data.forEach(function(row) {
           // Check for valid lat/lon
           if(row.latitude && row.longitude) {
-            var popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
+            let popupText = `<strong>${row.title || 'Untitled'}</strong><br>${row.date || ''}`;
+            if (row.image) {
+              popupText += `<br><img class="popup-image" src="${row.image}" alt="Image for ${row.title || 'incident'}">`;
+            }
+            if (row.source) {
+              popupText += `<br><a href="${row.source}" target="_blank" rel="noopener noreferrer">News Source</a>`;
+            }
             L.marker([parseFloat(row.latitude), parseFloat(row.longitude)])
               .addTo(map)
               .bindPopup(popupText);
